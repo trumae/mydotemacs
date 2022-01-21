@@ -39,27 +39,12 @@
 (use-package go-eldoc)
 (use-package go-errcheck)
 (use-package go-mode)
-;;(require 'go-mode-load)
-;(add-hook 'before-save-hook 'gofmt-before-save)
-;(add-hook 'go-mode-hook (lambda ()
-;                          (local-set-key (kbd \"M-.\") 'godef-jump)))
-;(add-mode-hook 'go-mode-hook (lambda ()
-;			       (setq tab-width 4)))
 
+(add-to-list 'exec-path "~/go/bin")
+(add-hook 'before-save-hook 'gofmt-before-save)
 (add-hook 'go-mode-hook #'lsp)
-(add-hook 'go-mode-hook (lambda ()
-			  (company-mode) ; enable company upon activating go
-			  ;;(set (make-local-variable 'company-backends) '(company-go))
-			  
-			  ;; Code layout.
-			  (setq tab-width 2 indent-tabs-mode 1) ; std go whitespace configuration
-			  (add-hook 'before-save-hook 'gofmt-before-save) ; run gofmt on each save
-			  
-			  ;; Fix parsing of error and warning lines in compiler output.
-			  (setq compilation-error-regexp-alist-alist ; first remove the standard conf; it's not good.
-				(remove 'go-panic
-					(remove 'go-test compilation-error-regexp-alist-alist)))))
 
+		   
 ;; Bonus: escape analysis.
 (flycheck-define-checker go-build-escape
   "A Go escape checker using `go build -gcflags -m'."
