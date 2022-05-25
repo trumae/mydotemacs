@@ -2,7 +2,9 @@
 (setq user-full-name "Trumae da Ilha")
 
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "sbcl")
+;(setq inferior-lisp-program "sbcl")
+;(setq inferior-lisp-program "ecl")
+(setq inferior-lisp-program "/home/trumae/projs/ccl/lx86cl64")
 
 (menu-bar-mode 0)
 (column-number-mode 1)
@@ -10,8 +12,10 @@
 (show-paren-mode 1)
 
 (require 'package)
-(add-to-list 'package-archives
+(add-to-list 'package-archives	     
              '("MELPA Stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives	     
+             '("GNU" . "http://elpa.gnu.org/packages/") t)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -24,16 +28,12 @@
 
 (use-package lsp-mode)
 (use-package markdown-mode)
+(use-package rustic)
 
 ;(use-package 'yasnippet
 ;  :ensure t)
 
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode)
-  )
-(setq flycheck-checker-error-threshold 1000) 
-
+(use-package flycheck)
 (use-package projectile)
 
 (use-package go-eldoc)
@@ -101,7 +101,7 @@
  ;; If there is more than one, they won't work right.
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(gruvbox-theme google-translate ack org-trello lua-mode beacon magit go-errcheck go-eldoc flycheck lsp-mode use-package tuareg slime projectile haskell-mode flx-ido)))
+   '(ada-ref-man ada-mode erc ## gruvbox-theme google-translate ack org-trello lua-mode beacon magit go-errcheck go-eldoc projectile flycheck lsp-mode use-package tuareg haskell-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
