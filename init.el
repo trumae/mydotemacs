@@ -2,9 +2,9 @@
 (setq user-full-name "Trumae da Ilha")
 
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
-;(setq inferior-lisp-program "sbcl")
+(setq inferior-lisp-program "sbcl")
 ;(setq inferior-lisp-program "ecl")
-(setq inferior-lisp-program "/home/trumae/projs/ccl/lx86cl64")
+;(setq inferior-lisp-program "/home/trumae/projs/ccl/lx86cl64")
 
 (menu-bar-mode 0)
 (column-number-mode 1)
@@ -101,7 +101,7 @@
  ;; If there is more than one, they won't work right.
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(ada-ref-man ada-mode erc ## gruvbox-theme google-translate ack org-trello lua-mode beacon magit go-errcheck go-eldoc projectile flycheck lsp-mode use-package tuareg haskell-mode)))
+   '(cpupower auctex websocket ada-ref-man ada-mode erc ## gruvbox-theme google-translate ack org-trello lua-mode beacon magit go-errcheck go-eldoc projectile flycheck lsp-mode use-package tuareg haskell-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
