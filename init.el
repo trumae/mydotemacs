@@ -90,7 +90,19 @@
 (use-package lua-mode)
 (use-package org)
 (require 'ob-tangle)
-(use-package org-trello)
+;(use-package org-trello)
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((gnuplot . t)
+   (lisp . t)
+   (lua . t)
+   (emacs-lisp . t)
+   (js . t)
+   (sqlite . t)
+   (scheme .t)
+   (C . t) 
+   (dot . t)))
+
 (use-package ack)
 (use-package google-translate)
 (use-package gruvbox-theme)
@@ -100,9 +112,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(ob-tangle tuareg haskell-mode websocket use-package rustic projectile org-trello magit lua-mode lsp-mode gruvbox-theme google-translate go-errcheck go-eldoc flycheck erc cpupower beacon auctex ada-ref-man ada-mode ack)))
+   '(ob-tangle tuareg haskell-mode websocket use-package rustic projectile magit lua-mode lsp-mode gruvbox-theme google-translate go-errcheck go-eldoc flycheck erc cpupower beacon auctex ada-ref-man ada-mode ack))
+ '(warning-suppress-types
+   '((comp)
+     (comp)
+     (comp)
+     (comp)
+     (comp)
+     (comp)
+     (comp)
+     (comp)
+     (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
