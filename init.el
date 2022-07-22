@@ -1,8 +1,9 @@
 (setq user-mail-address "trumae@gmail.com")
 (setq user-full-name "Trumae da Ilha")
 
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "sbcl")
+;; descomente para habilitar
+;(load (expand-file-name "~/quicklisp/slime-helper.el"))
+;(setq inferior-lisp-program "sbcl")
 ;(setq inferior-lisp-program "ecl")
 ;(setq inferior-lisp-program "/home/trumae/projs/ccl/lx86cl64")
 
@@ -27,8 +28,8 @@
 
 
 (use-package lsp-mode)
-(use-package markdown-mode)
-(use-package rustic)
+;;(use-package markdown-mode)
+;;(use-package rustic)
 
 ;(use-package 'yasnippet
 ;  :ensure t)
@@ -43,7 +44,6 @@
 (add-to-list 'exec-path "~/go/bin")
 (add-hook 'before-save-hook 'gofmt-before-save)
 (add-hook 'go-mode-hook #'lsp)
-
 		   
 ;; Bonus: escape analysis.
 (flycheck-define-checker go-build-escape
@@ -89,6 +89,7 @@
   :init (beacon-mode 1))
 (use-package lua-mode)
 (use-package org)
+(require 'ob-tangle)
 (use-package org-trello)
 (use-package ack)
 (use-package google-translate)
@@ -101,7 +102,7 @@
  ;; If there is more than one, they won't work right.
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(cpupower auctex websocket ada-ref-man ada-mode erc ## gruvbox-theme google-translate ack org-trello lua-mode beacon magit go-errcheck go-eldoc projectile flycheck lsp-mode use-package tuareg haskell-mode)))
+   '(ob-tangle tuareg haskell-mode websocket use-package rustic projectile org-trello magit lua-mode lsp-mode gruvbox-theme google-translate go-errcheck go-eldoc flycheck erc cpupower beacon auctex ada-ref-man ada-mode ack)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
