@@ -58,8 +58,8 @@
 (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
 ;; Setup company-mode
-(require 'company)
-(require 'irony)
+(use-package company)
+(use-package irony)
 
 (use-package company-irony-c-headers
   :config
@@ -224,6 +224,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
 )
+
 
 
 
