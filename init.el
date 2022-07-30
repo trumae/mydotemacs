@@ -185,14 +185,14 @@
   :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
-
-;(use-package centaur-tabs
-;  :demand
-;  :config
-;  (centaur-tabs-mode t)
-;  :bind
-;  ("C-<prior>" . centaur-tabs-backward)
-;  ("C-<next>" . centaur-tabs-forward))
+(use-package el2org)
+(use-package eldev)
+(use-package cmake-mode)
+(use-package erc)
+(use-package forth-mode)
+(use-package format-all)
+(use-package emacsql-sqlite3)
+(use-package emacsql-mysql)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -200,7 +200,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(cmake-ide ob-tangle tuareg haskell-mode websocket use-package rustic projectile magit lua-mode lsp-mode gruvbox-theme google-translate go-errcheck go-eldoc flycheck erc cpupower beacon auctex ada-ref-man ada-mode ack))
+   '(emacsql-mysql emacsql-psql emacsql-sqlite3 enwc format-all forth-mode fixmee cmake-mode eldev el2org cmake-ide ob-tangle tuareg haskell-mode websocket use-package rustic projectile magit lua-mode lsp-mode gruvbox-theme google-translate go-errcheck go-eldoc flycheck erc cpupower beacon auctex ada-ref-man ada-mode ack))
  '(warning-suppress-types
    '((comp)
      (comp)
@@ -217,3 +217,17 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(custom-set-icons
+ ;; custom-set-icons was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+)
+
+
+
+
+
+
+
