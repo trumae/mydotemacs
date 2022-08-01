@@ -1,11 +1,16 @@
 (setq user-mail-address "trumae@gmail.com")
 (setq user-full-name "Trumae da Ilha")
 
+;; Lower threshold to speed up garbage collection
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 2 1000 1000))))
+
 ;; descomente para habilitar
-;(load (expand-file-name "~/quicklisp/slime-helper.el"))
-;(setq inferior-lisp-program "sbcl")
-;(setq inferior-lisp-program "ecl")
-;(setq inferior-lisp-program "/home/trumae/projs/ccl/lx86cl64")
+					;(load (expand-file-name "~/quicklisp/slime-helper.el"))
+					;(setq inferior-lisp-program "sbcl")
+					;(setq inferior-lisp-program "ecl")
+					;(setq inferior-lisp-program "/home/trumae/projs/ccl/lx86cl64")
 
 (menu-bar-mode 0)
 (column-number-mode 1)
@@ -13,20 +18,37 @@
 (show-paren-mode 1)
 
 (require 'package)
-(add-to-list 'package-archives	     
-             '("MELPA Stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives	     
-             '("GNU" . "http://elpa.gnu.org/packages/") t)
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("elpa" . "https://elpa.gnu.org/packages/")
+        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 (package-initialize)
 
+(setq use-package-always-ensure t)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(eval-and-compile
-  (setq use-package-always-ensure t
-        use-package-expand-minimally t))
+(eval-when-compile (require 'use-package))
+(setq use-package-verbose t)
+(setq package-native-compile t)
+(setq comp-async-report-warnings-errors nil)
+(setq comp-deferred-compilation t)
 
-(require 'use-package)
+;; Install and load `quelpa-use-package'.
+(setq quelpa-update-melpa-p nil)
+(package-install 'quelpa-use-package)
+(require 'quelpa-use-package)
+
+;; ASYNC
+;; Emacs look SIGNIFICANTLY less often which is a good thing.
+;; asynchronous bytecode compilation and various other actions makes
+(use-package async
+  :ensure t
+  :defer t
+  :init
+  (dired-async-mode 1)
+  (async-bytecomp-package-mode 1)
+  :custom (async-bytecomp-allowed-packages '(all)))
 
 ;;;;;;;;;;;;;;;; C/C++ ;;;;;;;;;;;;;;;
 (require 'cc-mode)
@@ -67,7 +89,7 @@
    'company-backends '(company-irony-c-headers company-irony)))
 (add-hook 'after-init-hook 'global-company-mode)
 
-;; install gnu global: `apt-get install global`
+;;; install gnu global: `apt-get install global`
 (use-package ggtags
   :init
   (add-hook 'c-mode-common-hook
@@ -98,7 +120,7 @@
 (use-package yasnippet
   :ensure t)
 (use-package flycheck)
-(use-package projectile)
+;(use-package projectile)
 (use-package go-eldoc)
 (use-package go-errcheck)
 (use-package go-mode)
@@ -106,7 +128,7 @@
 (add-to-list 'exec-path "~/go/bin")
 (add-hook 'before-save-hook 'gofmt-before-save)
 (add-hook 'go-mode-hook #'lsp)
-		   
+
 ;; Bonus: escape analysis.
 (flycheck-define-checker go-build-escape
   "A Go escape checker using `go build -gcflags -m'."
@@ -152,7 +174,8 @@
 (use-package lua-mode)
 (use-package org)
 (require 'ob-tangle)
-;(use-package org-trello)
+					;(use-package org-trello)
+
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((gnuplot . t)
@@ -168,11 +191,10 @@
    (perl . t)
    (shell . t)
    (ditaa . t)
-   (C . t) 
+   (C . t)
    (dot . t)))
 
 (use-package ack)
-(use-package google-translate)
 (use-package gruvbox-theme)
 (use-package elpy
   :ensure t
@@ -185,50 +207,25 @@
   :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
-(use-package el2org)
-(use-package eldev)
-(use-package cmake-mode)
-(use-package erc)
-(use-package forth-mode)
-(use-package format-all)
-(use-package emacsql-sqlite3)
-(use-package emacsql-mysql)
+;(use-package el2org)
+;(use-package eldev)
+;(use-package cmake-mode)
+;(use-package erc)
+;(use-package forth-mode)
+;(use-package format-all)
+;(use-package emacsql-sqlite3)
+;(use-package emacsql-mysql)
+;(use-package egalgo)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(emacsql-mysql emacsql-psql emacsql-sqlite3 enwc format-all forth-mode fixmee cmake-mode eldev el2org cmake-ide ob-tangle tuareg haskell-mode websocket use-package rustic projectile magit lua-mode lsp-mode gruvbox-theme google-translate go-errcheck go-eldoc flycheck erc cpupower beacon auctex ada-ref-man ada-mode ack))
- '(warning-suppress-types
-   '((comp)
-     (comp)
-     (comp)
-     (comp)
-     (comp)
-     (comp)
-     (comp)
-     (comp)
-     (comp))))
+ '(package-selected-packages '(quelpa-use-package use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-(custom-set-icons
- ;; custom-set-icons was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
-)
-
-
-
-
-
-
-
-
