@@ -7,10 +7,10 @@
             (setq gc-cons-threshold (* 2 1000 1000))))
 
 ;; descomente para habilitar
-					;(load (expand-file-name "~/quicklisp/slime-helper.el"))
-					;(setq inferior-lisp-program "sbcl")
-					;(setq inferior-lisp-program "ecl")
-					;(setq inferior-lisp-program "/home/trumae/projs/ccl/lx86cl64")
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+(setq inferior-lisp-program "sbcl")
+;;(setq inferior-lisp-program "ecl")
+;;(setq inferior-lisp-program "/home/trumae/projs/ccl/lx86cl64")
 
 (menu-bar-mode 0)
 (column-number-mode 1)
@@ -30,7 +30,7 @@
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
-(setq package-native-compile t)
+;;(setq package-native-compile t)
 (setq comp-async-report-warnings-errors nil)
 (setq comp-deferred-compilation t)
 
@@ -73,21 +73,21 @@
 (global-ede-mode)
 
 ;; Setup irony
-(use-package irony)
-(add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'c-mode-hook 'irony-mode)
-(add-hook 'objc-mode-hook 'irony-mode)
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+;(use-package irony)
+;(add-hook 'c++-mode-hook 'irony-mode)
+;(add-hook 'c-mode-hook 'irony-mode)
+;(add-hook 'objc-mode-hook 'irony-mode)
+;(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
 ;; Setup company-mode
-(use-package company)
-(use-package irony)
-
-(use-package company-irony-c-headers
-  :config
-  (add-to-list
-   'company-backends '(company-irony-c-headers company-irony)))
-(add-hook 'after-init-hook 'global-company-mode)
+;(use-package company)
+;(use-package irony)
+;
+;(use-package company-irony-c-headers
+;  :config
+;  (add-to-list
+;   'company-backends '(company-irony-c-headers company-irony)))
+;(add-hook 'after-init-hook 'global-company-mode)
 
 ;;; install gnu global: `apt-get install global`
 (use-package ggtags
@@ -105,22 +105,59 @@
 (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
 
 
+;; Available C style:
+;; “gnu”: The default style for GNU projects
+;; “k&r”: What Kernighan and Ritchie, the authors of C used in their book
+;; “bsd”: What BSD developers use, aka “Allman style” after Eric Allman.
+;; “whitesmith”: Popularized by the examples that came with Whitesmiths C, an early commercial C compiler.
+;; “stroustrup”: What Stroustrup, the author of C++ used in his book
+;; “ellemtel”: Popular C++ coding standards as defined by “Programming in C++, Rules and Recommendations,” Erik Nyquist and Mats Henricson, Ellemtel
+;; “linux”: What the Linux developers use for kernel development
+;; “python”: What Python developers use for extension modules
+;; “java”: The default style for java-mode (see below)
+;; “user”: When you want to define your own style
+(setq c-default-style "linux") ;; set style to "linux"
+
+(use-package cc-mode
+  :init
+  (define-key c-mode-map  [(tab)] 'company-complete)
+  (define-key c++-mode-map  [(tab)] 'company-complete))
+
+
+
+
+
+(use-package fzf
+  :bind
+    ;; Don't forget to set keybinds!
+  :config
+  (setq fzf/args "-x --color bw --print-query --margin=1,0 --no-hscroll"
+        fzf/executable "fzf"
+        fzf/git-grep-args "-i --line-number %s"
+        ;; command used for `fzf-grep-*` functions
+        ;; example usage for ripgrep:
+        ;; fzf/grep-command "rg --no-heading -nH"
+        fzf/grep-command "ack"
+        ;; If nil, the fzf buffer will appear at the top of the window
+        fzf/position-bottom t
+        fzf/window-height 15))
+
 (use-package lsp-mode
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (python-mode . lsp)
+         ;;(python-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
-(use-package markdown-mode)
-(use-package rustic)
-(use-package yasnippet
-  :ensure t)
+;;(use-package markdown-mode)
+;;(use-package rustic)
+;;(use-package yasnippet
+;;  :ensure t)
 (use-package flycheck)
-;(use-package projectile)
+;;(use-package projectile)
 (use-package go-eldoc)
 (use-package go-errcheck)
 (use-package go-mode)
@@ -194,35 +231,40 @@
    (C . t)
    (dot . t)))
 
-(use-package ack)
-(use-package gruvbox-theme)
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable))
-(use-package tree-sitter :ensure t)
-(use-package tree-sitter-langs :ensure t)
-(use-package tree-sitter-indent :ensure t)
-(use-package csharp-mode
-  :ensure t
-  :config
-  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
-;(use-package el2org)
-;(use-package eldev)
-;(use-package cmake-mode)
-;(use-package erc)
-;(use-package forth-mode)
-;(use-package format-all)
-;(use-package emacsql-sqlite3)
-;(use-package emacsql-mysql)
-;(use-package egalgo)
+(setq org-confirm-babel-evaluate nil
+      org-src-fontify-natively t
+      org-src-tab-acts-natively t)
+
+;;(use-package ack)
+;;(use-package gruvbox-theme)
+;;(use-package elpy
+;;  :ensure t
+;;  :init
+;;  (elpy-enable))
+;;(use-package tree-sitter :ensure t)
+;;(use-package tree-sitter-langs :ensure t)
+;;(use-package tree-sitter-indent :ensure t)
+;(use-package csharp-mode
+;  :ensure t
+;  :config
+;  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
+;;(use-package el2org)
+;;(use-package eldev)
+;;(use-package cmake-mode)
+;;(use-package erc)
+;;(use-package forth-mode)
+;;(use-package format-all)
+;;(use-package emacsql-sqlite3)
+;;(use-package emacsql-mysql)
+;;(use-package egalgo)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(quelpa-use-package use-package)))
+ '(package-selected-packages
+   '(fzf tree-sitter-indent tree-sitter-langs tree-sitter ack lua-mode beacon magit go-errcheck go-eldoc flycheck yasnippet cmake-mode rustic quelpa-use-package lsp-mode ggtags company-irony-c-headers async)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
