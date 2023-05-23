@@ -52,14 +52,13 @@
   (yas-global-mode))
 
 
-
 (setq use-package-always-ensure t)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
-;;(setq package-native-compile t)
+(setq package-native-compile t)
 (setq comp-async-report-warnings-errors nil)
 (setq comp-deferred-compilation t)
 
@@ -146,12 +145,15 @@
 (use-package magit)
 (setq magit-fetch-modules-jobs 16)
 
+(use-package tesouro)
+
 (use-package beacon
   :ensure t
   :init (beacon-mode 1))
 (use-package lua-mode)
 (use-package org)
 (require 'ob-tangle)
+(require 'ob-solidity)
 					;(use-package org-trello)
 
 (org-babel-do-load-languages
@@ -285,7 +287,7 @@
       (path-separator . ":")
       (null-device . "/dev/null"))))
  '(package-selected-packages
-   '(quelpa-use-package lsp-mode yasnippet lsp-treemacs helm-lsp projectile hydra flycheck company avy which-key helm-xref dap-mode)))
+   '(xah-fly-keys ob-solidity gnuplot maude-mode polymode sml-mode sparkline tesouro uuid quelpa-use-package lsp-mode yasnippet lsp-treemacs helm-lsp projectile hydra flycheck company avy which-key helm-xref dap-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
