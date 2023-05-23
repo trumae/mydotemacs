@@ -24,6 +24,35 @@
         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 (package-initialize)
 
+(setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs helm-lsp
+    projectile hydra flycheck company avy which-key helm-xref dap-mode))
+(when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages))
+
+(helm-mode)
+(require 'helm-xref)
+(define-key global-map [remap find-file] #'helm-find-files)
+(define-key global-map [remap execute-extended-command] #'helm-M-x)
+(define-key global-map [remap switch-to-buffer] #'helm-mini)
+
+(which-key-mode)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-idle-delay 0.0
+      company-minimum-prefix-length 1
+      lsp-idle-delay 0.1)  ;; clangd is fast
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (require 'dap-cpptools)
+  (yas-global-mode))
+
+
+
 (setq use-package-always-ensure t)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -50,83 +79,6 @@
   (async-bytecomp-package-mode 1)
   :custom (async-bytecomp-allowed-packages '(all)))
 
-;;;;;;;;;;;;;;;; C/C++ ;;;;;;;;;;;;;;;
-(require 'cc-mode)
-(require 'semantic)
-
-(global-semanticdb-minor-mode 1)
-(global-semantic-idle-scheduler-mode 1)
-(global-semantic-stickyfunc-mode 1)
-
-(semantic-mode 1)
-
-(defun alexott/cedet-hook ()
-  (local-set-key "\C-c\C-j" 'semantic-ia-fast-jump)
-  (local-set-key "\C-c\C-s" 'semantic-ia-show-summary))
-
-(add-hook 'c-mode-common-hook 'alexott/cedet-hook)
-(add-hook 'c-mode-hook 'alexott/cedet-hook)
-(add-hook 'c++-mode-hook 'alexott/cedet-hook)
-
-;; Enable EDE only in C/C++
-(require 'ede)
-(global-ede-mode)
-
-;; Setup irony
-;(use-package irony)
-;(add-hook 'c++-mode-hook 'irony-mode)
-;(add-hook 'c-mode-hook 'irony-mode)
-;(add-hook 'objc-mode-hook 'irony-mode)
-;(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-
-;; Setup company-mode
-;(use-package company)
-;(use-package irony)
-;
-;(use-package company-irony-c-headers
-;  :config
-;  (add-to-list
-;   'company-backends '(company-irony-c-headers company-irony)))
-;(add-hook 'after-init-hook 'global-company-mode)
-
-;;; install gnu global: `apt-get install global`
-(use-package ggtags
-  :init
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-		(ggtags-mode 1)))))
-(define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
-(define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
-(define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
-(define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
-(define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
-(define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
-(define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
-
-
-;; Available C style:
-;; “gnu”: The default style for GNU projects
-;; “k&r”: What Kernighan and Ritchie, the authors of C used in their book
-;; “bsd”: What BSD developers use, aka “Allman style” after Eric Allman.
-;; “whitesmith”: Popularized by the examples that came with Whitesmiths C, an early commercial C compiler.
-;; “stroustrup”: What Stroustrup, the author of C++ used in his book
-;; “ellemtel”: Popular C++ coding standards as defined by “Programming in C++, Rules and Recommendations,” Erik Nyquist and Mats Henricson, Ellemtel
-;; “linux”: What the Linux developers use for kernel development
-;; “python”: What Python developers use for extension modules
-;; “java”: The default style for java-mode (see below)
-;; “user”: When you want to define your own style
-(setq c-default-style "linux") ;; set style to "linux"
-
-(use-package cc-mode
-  :init
-  (define-key c-mode-map  [(tab)] 'company-complete)
-  (define-key c++-mode-map  [(tab)] 'company-complete))
-
-
-
-
-
 (use-package fzf
   :bind
     ;; Don't forget to set keybinds!
@@ -141,16 +93,6 @@
         ;; If nil, the fzf buffer will appear at the top of the window
         fzf/position-bottom t
         fzf/window-height 15))
-
-(use-package lsp-mode
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         ;;(python-mode . lsp)
-         ;; if you want which-key integration
-         (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
 
 ;;(use-package markdown-mode)
 ;;(use-package rustic)
@@ -200,7 +142,6 @@
 (with-eval-after-load 'flycheck
   (add-to-list 'flycheck-checkers 'go-build-escape)
   (flycheck-add-next-checker 'go-gofmt 'go-build-escape))
-
 
 (use-package magit)
 (setq magit-fetch-modules-jobs 16)
@@ -263,8 +204,88 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(connection-local-criteria-alist
+   '(((:application tramp :protocol "flatpak")
+      tramp-container-connection-local-default-flatpak-profile)
+     ((:application tramp)
+      tramp-connection-local-default-system-profile tramp-connection-local-default-shell-profile)))
+ '(connection-local-profile-alist
+   '((tramp-container-connection-local-default-flatpak-profile
+      (tramp-remote-path "/app/bin" tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin"))
+     (tramp-connection-local-darwin-ps-profile
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,uid,user,gid,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state=abcde" "-o" "ppid,pgid,sess,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etime,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . tramp-ps-time)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-busybox-ps-profile
+      (tramp-process-attributes-ps-args "-o" "pid,user,group,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "stat=abcde" "-o" "ppid,pgid,tty,time,nice,etime,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (user . string)
+       (group . string)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (ttname . string)
+       (time . tramp-ps-time)
+       (nice . number)
+       (etime . tramp-ps-time)
+       (args)))
+     (tramp-connection-local-bsd-ps-profile
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,euid,user,egid,egroup,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state,ppid,pgid,sid,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etimes,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (group . string)
+       (comm . 52)
+       (state . string)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . number)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-default-shell-profile
+      (shell-file-name . "/bin/sh")
+      (shell-command-switch . "-c"))
+     (tramp-connection-local-default-system-profile
+      (path-separator . ":")
+      (null-device . "/dev/null"))))
  '(package-selected-packages
-   '(fzf tree-sitter-indent tree-sitter-langs tree-sitter ack lua-mode beacon magit go-errcheck go-eldoc flycheck yasnippet cmake-mode rustic quelpa-use-package lsp-mode ggtags company-irony-c-headers async)))
+   '(quelpa-use-package lsp-mode yasnippet lsp-treemacs helm-lsp projectile hydra flycheck company avy which-key helm-xref dap-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
