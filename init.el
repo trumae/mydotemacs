@@ -4,7 +4,7 @@
 ;; Lower threshold to speed up garbage collection
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold (* 2 1000 1000))))
+            (setq gc-cons-threshold (* 100 1000 1000))))
 
 ;; descomente para habilitar
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
@@ -24,8 +24,20 @@
         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 (package-initialize)
 
-(setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs helm-lsp
-    projectile hydra flycheck company avy which-key helm-xref dap-mode))
+(setq package-selected-packages '(lsp-mode
+				  yasnippet
+				  lsp-treemacs
+				  helm-lsp
+				  projectile
+				  hydra
+				  flycheck
+				  company
+				  avy
+				  which-key
+				  helm-xref
+				  use-package
+				  quelpa-use-package
+				  dap-mode))
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages))
@@ -40,8 +52,7 @@
 (add-hook 'c-mode-hook 'lsp)
 (add-hook 'c++-mode-hook 'lsp)
 
-(setq gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 1024 1024)
+(setq read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
       company-idle-delay 0.0
       company-minimum-prefix-length 1
@@ -51,20 +62,11 @@
   (require 'dap-cpptools)
   (yas-global-mode))
 
-
-(setq use-package-always-ensure t)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
 (setq package-native-compile t)
 (setq comp-async-report-warnings-errors nil)
 (setq comp-deferred-compilation t)
-
-;; Install and load `quelpa-use-package'.
-(setq quelpa-update-melpa-p nil)
-(package-install 'quelpa-use-package)
 (require 'quelpa-use-package)
 
 ;; ASYNC
@@ -93,12 +95,16 @@
         fzf/position-bottom t
         fzf/window-height 15))
 
+(use-package irony)
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
 ;;(use-package markdown-mode)
 ;;(use-package rustic)
 ;;(use-package yasnippet
 ;;  :ensure t)
-(use-package flycheck)
-;;(use-package projectile)
 (use-package go-eldoc)
 (use-package go-errcheck)
 (use-package go-mode)
@@ -153,8 +159,6 @@
 (use-package lua-mode)
 (use-package org)
 (require 'ob-tangle)
-(require 'ob-solidity)
-					;(use-package org-trello)
 
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -180,10 +184,10 @@
 
 ;;(use-package ack)
 ;;(use-package gruvbox-theme)
-;;(use-package elpy
-;;  :ensure t
-;;  :init
-;;  (elpy-enable))
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable))
 ;;(use-package tree-sitter :ensure t)
 ;;(use-package tree-sitter-langs :ensure t)
 ;;(use-package tree-sitter-indent :ensure t)
@@ -286,6 +290,7 @@
      (tramp-connection-local-default-system-profile
       (path-separator . ":")
       (null-device . "/dev/null"))))
+ '(custom-enabled-themes '(wheatgrass))
  '(package-selected-packages
    '(xah-fly-keys ob-solidity gnuplot maude-mode polymode sml-mode sparkline tesouro uuid quelpa-use-package lsp-mode yasnippet lsp-treemacs helm-lsp projectile hydra flycheck company avy which-key helm-xref dap-mode)))
 (custom-set-faces
