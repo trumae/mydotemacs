@@ -188,6 +188,14 @@
   :ensure t
   :init
   (elpy-enable))
+
+;; Enable autopep8
+
+(use-package py-autopep8
+  :ensure t
+  :init
+  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+
 ;;(use-package tree-sitter :ensure t)
 ;;(use-package tree-sitter-langs :ensure t)
 ;;(use-package tree-sitter-indent :ensure t)
